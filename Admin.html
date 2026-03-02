@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhadohi Workers Hub</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='16' height='11' x='4' y='9' rx='2'/%3E%3Cpath d='M8 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M12 13v2'/%3E%3Cpath d='M8 13h8'/%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="CSS/index.css">
+    <script src="Library/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="JS/supabase_config.js"></script>
+    <script src="JS/Index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            if (typeof checkAdminSession === 'function') checkAdminSession();
+        });
+    </script>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">भदोही वर्कर्स हब</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="Register.html">वर्कर बनें (Register Here)</a>
+            <a href="Admin.html">Admin Panel</a>
+            <a href="javascript:void(0)" onclick="logoutAdmin()" style="color: #ef4444;">Logout</a>
+        </div>
+    </nav>
+    <div class="hero">
+        <h1 class="logo" style="font-size: 3rem; -webkit-text-fill-color: initial; background: none; color: white;">
+            Admin
+            Panel</h1>
+        <p>Manage worker profiles, details, and site operations.</p>
+    </div>
+
+    <div class="admin-tabs" style="margin: 0 5% 1rem; display: flex; gap: 1rem;">
+        <button class="tab-btn active" onclick="switchTab('usersTab', this)">👥 User Data</button>
+        <button class="tab-btn" onclick="switchTab('workTypeTab', this)">🛠️ Work Types</button>
+    </div>
+
+    <!-- User Data Tab -->
+    <div id="usersTab" class="tab-content active">
+        <div class="admin-table-container glass animate-fade"
+            style="margin: 0 5% 4rem; padding: 1.5rem; overflow: hidden;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2
+                    style="font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Registered Workers</h2>
+                <div style="color: var(--text-muted); font-size: 0.9rem;" id="workerCount">Loading...</div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="admin-table" style="min-width: 900px;">
+                    <thead>
+                        <tr>
+                            <th>Photo</th>
+                            <th>Worker Info (ID & Name)</th>
+                            <th>Skill / Work</th>
+                            <th>Location (Village, District)</th>
+                            <th>Contact Info</th>
+                            <th>Wage Details</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminWorkersTable">
+                        <!-- Data will be loaded via AJAX -->
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 4rem;">
+                                <div class="liquid-loader">
+                                    <div class="loading-text">
+                                        Loading<span class="dot">.</span><span class="dot">.</span><span
+                                            class="dot">.</span>
+                                    </div>
+                                    <div class="loader-track">
+                                        <div class="liquid-fill"></div>
+                                    </div>
+                                </div>
+                                <p style="margin-top: 1rem; color: var(--text-muted);">Fetching worker records...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Type Tab -->
+    <div id="workTypeTab" class="tab-content" style="display: none;">
+        <div class="admin-table-container glass animate-fade" style="margin: 0 5% 4rem; padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2
+                    style="font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Manage Work Types</h2>
+                <button class="btn-primary" onclick="openWorkTypeModal()">+ Add Work Type</button>
+            </div>
+
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>English Name</th>
+                        <th>Hindi Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="workTypeTableBody">
+                    <!-- Work types will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Work Type Modal -->
+    <div id="workTypeModal" class="modal-overlay"
+        style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center;">
+        <div class="glass" style="width: 400px; padding: 2rem; border-radius: 20px;">
+            <h3 id="modalTitle" style="color: white; margin-bottom: 1.5rem;">Add Work Type</h3>
+            <input type="hidden" id="workTypeId">
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label style="color: var(--secondary);">English Name</label>
+                <input type="text" id="workTypeName" placeholder="e.g. Mason"
+                    style="width: 100%; padding: 0.8rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: white;">
+            </div>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="color: var(--secondary);">Hindi Name</label>
+                <input type="text" id="workTypeHindi" placeholder="जैसे: राज मिस्त्री"
+                    style="width: 100%; padding: 0.8rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: white;">
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn-primary" style="flex: 1;" onclick="saveWorkType()">Save</button>
+                <button class="btn-delete" style="flex: 1; background: transparent; border: 1px solid #ef4444;"
+                    onclick="closeWorkTypeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

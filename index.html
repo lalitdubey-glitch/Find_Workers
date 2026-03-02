@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhadohi Workers Hub</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='16' height='11' x='4' y='9' rx='2'/%3E%3Cpath d='M8 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M12 13v2'/%3E%3Cpath d='M8 13h8'/%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="CSS/index.css">
+    <script src="Library/jquery/jquery.min.js"></script>
+    <!-- Supabase CDN and Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="JS/supabase_config.js"></script>
+    <script src="JS/Index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">भदोही वर्कर्स हब</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="Register.html">वर्कर बनें (Register Here)</a>
+            <a href="Admin.html">Admin Panel</a>
+            <a href="javascript:void(0)" onclick="logoutAdmin()" style="color: #ef4444; display: none;">Logout</a>
+        </div>
+    </nav>
+    <div class="hero">
+        <h1 class="animate-fade">भदोही के कुशल वर्कर खोजें</h1>
+        <p class="animate-fade">स्थानीय मजदूरों को उन लोगों से जोड़ना जिन्हें उनकी जरूरत है। कालीन बुनकर, मिस्त्री,
+            इलेक्ट्रीशियन और बहुत कुछ।</p>
+
+        <div id="poda">
+            <div class="glow"></div>
+            <div class="darkBorderBg"></div>
+            <div class="darkBorderBg"></div>
+            <div class="darkBorderBg"></div>
+
+            <div class="white"></div>
+
+            <div class="border"></div>
+
+            <div id="main">
+                <input placeholder="Search..." type="text" id="searchInput" class="input" />
+                <div id="input-mask"></div>
+                <div id="pink-mask"></div>
+                <div class="filterBorder"></div>
+                <div id="filter-icon">
+                    <svg preserveAspectRatio="none" height="27" width="27" viewBox="4.8 4.56 14.832 15.408" fill="none"
+                        style="pointer-events:none;">
+                        <path
+                            d="M8.16 6.65002H15.83C16.47 6.65002 16.99 7.17002 16.99 7.81002V9.09002C16.99 9.56002 16.7 10.14 16.41 10.43L13.91 12.64C13.56 12.93 13.33 13.51 13.33 13.98V16.48C13.33 16.83 13.1 17.29 12.81 17.47L12 17.98C11.24 18.45 10.2 17.92 10.2 16.99V13.91C10.2 13.5 9.97 12.98 9.73 12.69L7.52 10.36C7.23 10.08 7 9.55002 7 9.20002V7.87002C7 7.17002 7.52 6.65002 8.16 6.65002Z"
+                            stroke="#d6d6e6" stroke-width="1" stroke-miterlimit="10" stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                    <div style="position: absolute; top:0; left:0; width:100%; height:100%; cursor: pointer; z-index: 20;"
+                        onclick="toggleFilterMenu(event)"></div>
+                </div>
+
+                <!-- Custom Filter Dropdown -->
+                <input type="hidden" id="priceTypeFilter" value="">
+                <!-- Search Bar Filter Dropdown -->
+                <div id="customFilterDropdown" class="glass custom-filter-dropdown"
+                    style="display: none; position: absolute; top: 65px; left: unset; right: 0;">
+                    <div class="filter-option" onclick="setCustomFilter('priceType', '', 'सभी काम (All)')">📝 सभी काम
+                        (All)</div>
+                    <div class="filter-option" onclick="setCustomFilter('priceType', 'Per Day', 'प्रति दिन (Per Day)')">
+                        📅 प्रति दिन (Per Day)</div>
+                    <div class="filter-option" onclick="setCustomFilter('priceType', 'Contract', 'ठेका (Contract)')">🤝
+                        ठेका (Contract)</div>
+                </div>
+
+
+
+                <div id="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2"
+                        stroke-linejoin="round" stroke-linecap="round" height="24" fill="none"
+                        class="feather feather-search">
+                        <circle stroke="url(#search)" r="8" cy="11" cx="11"></circle>
+                        <line stroke="url(#searchl)" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+                        <defs>
+                            <linearGradient gradientTransform="rotate(50)" id="search">
+                                <stop stop-color="#f8e7f8" offset="0%"></stop>
+                                <stop stop-color="#b6a9b7" offset="50%"></stop>
+                            </linearGradient>
+                            <linearGradient id="searchl">
+                                <stop stop-color="#b6a9b7" offset="0%"></stop>
+                                <stop stop-color="#837484" offset="50%"></stop>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden search btn logic bridge -->
+        <button id="searchBtn" style="display:none;"></button>
+    </div>
+
+    <div class="filters-swipe animate-fade">
+        <div class="filter-group glass" id="pincodeGroup" style="cursor: pointer; padding: 10px;">
+            <label>पिनकोड (Pincode)</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="text" id="pincodeFilter" placeholder="पिनकोड डालें" maxlength="6"
+                    style="background: transparent; border: none; color: white; width: 100%; outline: none; flex: 1; padding: 5px;">
+                <button id="btnVerifyHomePincode" class="btn-primary"
+                    style="height: 38px; padding: 0 15px; border-radius: 10px; font-size: 14px; font-weight: 600; white-space: nowrap;">Verify</button>
+            </div>
+        </div>
+        <!-- State Custom Dropdown -->
+        <div class="filter-group glass custom-dropdown-wrapper"
+            style="padding: 10px; position: relative; cursor: pointer;" id="stateFilterWrapper"
+            onclick="toggleCustomDropdown('stateOptions')">
+            <div class="dropdown-trigger">
+                <span id="selectedStateText" style="color: var(--text-muted);">सभी राज्य</span>
+                <svg class="chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </div>
+            <div id="stateOptions" class="custom-filter-dropdown" style="display: none;">
+                <div class="filter-option" onclick="setCustomFilter('state', '', 'सभी राज्य')">सभी राज्य</div>
+                <!-- Dynamic options here -->
+            </div>
+            <select id="stateFilter" style="display: none;">
+                <option value="">सभी राज्य</option>
+            </select>
+        </div>
+
+        <!-- District Custom Dropdown -->
+        <div class="filter-group glass custom-dropdown-wrapper"
+            style="padding: 10px; position: relative; cursor: pointer;" id="districtFilterWrapper"
+            onclick="toggleCustomDropdown('districtOptions')">
+            <div class="dropdown-trigger">
+                <span id="selectedDistrictText" style="color: var(--text-muted);">सभी जिले</span>
+                <svg class="chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </div>
+            <div id="districtOptions" class="custom-filter-dropdown" style="display: none;">
+                <div class="filter-option" onclick="setCustomFilter('dist', '', 'सभी जिले')">सभी जिले</div>
+            </div>
+            <select id="districtFilter" style="display: none;">
+                <option value="">सभी जिले</option>
+            </select>
+        </div>
+
+        <!-- Village Custom Dropdown -->
+        <div class="filter-group glass custom-dropdown-wrapper"
+            style="padding: 10px; position: relative; cursor: pointer;" id="villageFilterWrapper"
+            onclick="toggleCustomDropdown('villageOptions')">
+            <div class="dropdown-trigger">
+                <span id="selectedVillageText" style="color: var(--text-muted);">सभी गाँव/शहर</span>
+                <svg class="chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </div>
+            <div id="villageOptions" class="custom-filter-dropdown" style="display: none;">
+                <div class="filter-option" onclick="setCustomFilter('vill', '', 'सभी गाँव/शहर')">सभी गाँव/शहर</div>
+            </div>
+            <select id="villageFilter" style="display: none;">
+                <option value="">सभी गाँव/शहर</option>
+            </select>
+        </div>
+
+        <div class="filter-group glass custom-dropdown-wrapper"
+            style="padding: 10px; position: relative; cursor: pointer;" id="priceTypeFilterWrapper"
+            onclick="toggleCustomDropdown('priceTypeOptions')">
+            <label style="cursor: pointer;">कीमत (Price Type)</label>
+            <div class="dropdown-trigger">
+                <span id="selectedPriceTypeText" style="color: var(--text-muted);">सभी (Price Type)</span>
+                <svg class="chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </div>
+            <div id="priceTypeOptions" class="custom-filter-dropdown" style="display: none;">
+                <div class="filter-option" onclick="setCustomFilter('priceType', '', 'सभी (Price Type)')">सभी (All)
+                </div>
+                <div class="filter-option" onclick="setCustomFilter('priceType', 'Per Day', 'प्रति दिन (Per Day)')">
+                    प्रति दिन (Per Day)</div>
+                <div class="filter-option" onclick="setCustomFilter('priceType', 'Contract', 'ठेका (Contract)')">ठेका
+                    (Contract)</div>
+            </div>
+            <select id="priceTypeFilter" style="display: none;">
+                <option value="">सभी</option>
+                <option value="Per Day">Per Day</option>
+                <option value="Contract">Contract</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="workers-grid" id="workersContainer">
+        <!-- Workers will be loaded here via AJAX -->
+    </div>
+
+    <div style="text-align: center; margin: 2rem 0; display: flex; justify-content: center; gap: 1rem;">
+        <button id="btnPrevPage" class="btn-primary" style="display: none; background: #64748b;">⬅️ पिछला
+            (Previous)</button>
+        <button id="btnNextPage" class="btn-next" style="display: none; width: auto; padding: 0.8rem 2rem;">और देखें
+            (Next)
+            ➡️</button>
+    </div>
+
+    <!-- Worker Details Modal (Optional Premium Feature) -->
+    <div id="workerModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:90000; align-items:center; justify-content:center;">
+        <div class="glass" style="max-width:500px; width:90%; padding:2rem; position:relative;">
+            <span id="closeModal"
+                style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:1.5rem;">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+    <footer
+        style="padding: 3rem 5%; background: rgba(15, 23, 42, 0.9); border-top: 1px solid var(--glass-border); color: var(--text-muted); text-align: center;">
+        <div style="margin-bottom: 2rem;">
+            <h3 style="color: white; margin-bottom: 1rem;">एडमिन से संपर्क करें (Admin Help)</h3>
+            <p style="margin-bottom: 0.5rem;">Email: <a href="mailto:lalitdubey8626@gmail.com"
+                    style="color: var(--secondary); text-decoration: none;">lalitdubey8626@gmail.com</a></p>
+            <p style="margin-bottom: 1.5rem;">Phone: <a href="tel:+916393457594"
+                    style="color: var(--secondary); text-decoration: none;">+91 6393457594</a></p>
+
+            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <!-- Feedback Options -->
+                <a href="https://wa.me/916393457594?text=Hello%20Lalit,%20I%20have%20a%20feedback%20regarding%20Bhadohi%20Workers%20Hub:"
+                    target="_blank" class="btn-primary"
+                    style="display: flex; align-items: center; gap: 8px; background: #25D366; text-decoration: none; padding: 0.8rem 1.5rem;">
+                    <span>WhatsApp Feedback</span>
+                </a>
+                <a href="mailto:lalitdubey8626@gmail.com?subject=Feedback%20for%20Bhadohi%20Workers%20Hub"
+                    class="btn-primary" style="text-decoration: none; padding: 0.8rem 1.5rem;">
+                    Email Feedback
+                </a>
+            </div>
+        </div>
+        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 2rem 0;">
+        <p><span id="currentYear"></span> भदोही वर्कर्स हब | Created by Lalit Dubey | स्थानीय मजदूरों का सशक्तिकरण</p>
+    </footer>
+
+</body>
+
+
+</html>
