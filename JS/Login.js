@@ -9,14 +9,7 @@ async function handleLogin(e) {
         return;
     }
 
-    // Show Loading
-    Swal.fire({
-        title: 'Verifying with Supabase...',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
+    showCustomLoader('Verifying with Supabase...');
 
     try {
         // Use Supabase Auth for real security

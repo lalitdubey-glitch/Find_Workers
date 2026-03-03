@@ -1,13 +1,32 @@
 :root {
+    /* Core Brand Colors (don't change) */
     --primary: #4f46e5;
     --primary-hover: #4338ca;
     --secondary: #ec4899;
+    --gradient: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
+
+    /* Theme-specific Colors (Dark Mode Default) */
     --bg-dark: #0f172a;
     --card-bg: rgba(30, 41, 59, 0.7);
     --glass-border: rgba(255, 255, 255, 0.1);
     --text-white: #f8fafc;
     --text-muted: #94a3b8;
-    --gradient: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
+    --nav-bg: rgba(15, 23, 42, 0.95);
+    --input-bg: rgba(30, 41, 59, 0.7);
+    --footer-bg: rgba(15, 23, 42, 0.9);
+    --footer-heading: white;
+}
+
+body.light-mode {
+    --bg-dark: #f1f5f9;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --text-white: #1e293b;
+    --text-muted: #64748b;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --footer-bg: #f8fafc;
+    --footer-heading: #1e293b;
 }
 
 * {
@@ -22,6 +41,7 @@ body {
     color: var(--text-white);
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
 }
 
 /* Glassmorphism Classes */
@@ -42,25 +62,25 @@ nav {
     position: sticky;
     top: 0;
     z-index: 50000;
-    /* Extremely high to stay on top of everything */
-    background: rgba(15, 23, 42, 0.95);
-    /* Increased opacity for clarity */
+    background: var(--nav-bg);
     backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--glass-border);
+    transition: background 0.3s, border-color 0.3s;
 }
 
 .logo {
     font-size: 1.5rem;
     font-weight: 800;
     background: var(--gradient);
-    -webkit-background-clip: text;
     background-clip: text;
+    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
+    align-items: center;
 }
 
 .nav-links a {
@@ -135,15 +155,15 @@ nav {
     display: flex;
     position: relative;
     z-index: 1000;
-    /* Ensure this stays above worker cards */
     overflow: visible !important;
     gap: 1rem;
     padding: 1.5rem 5%;
-    background: rgba(15, 23, 42, 0.4);
+    background: var(--card-bg);
     border-radius: 20px;
     margin: 0 5% 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
     flex-wrap: wrap;
+    transition: background 0.3s, border-color 0.3s;
 }
 
 .filters-swipe {
@@ -156,18 +176,9 @@ nav {
 
 /* Redundant styles removed */
 
-.filter-option {
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-    color: white;
-    font-size: 0.9rem;
-}
-
 .filter-option:hover {
     background: var(--secondary);
-    color: white;
+    color: white !important;
 }
 
 .filter-group {
@@ -470,22 +481,111 @@ nav {
 /* Responsive */
 @media (max-width: 768px) {
     .hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
+    }
+
+    .workers-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem;
+        padding: 0.75rem;
     }
 
     nav {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem 5%;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 1.5rem 5% !important;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .logo {
+        font-size: 1.5rem !important;
+        text-align: center;
+        width: 100%;
+    }
+
+    .theme-toggle {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 40px !important;
+        height: 40px !important;
     }
 
     .nav-links {
-        display: flex;
-        gap: 0.8rem;
-        font-size: 0.8rem;
-        flex-wrap: wrap;
+        display: flex !important;
         justify-content: center;
+        gap: 8px !important;
+        flex-wrap: wrap;
+        width: 100%;
+        border-top: 1px solid var(--glass-border);
+        padding-top: 15px;
     }
+
+    .nav-links a {
+        font-size: 0.8rem !important;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--glass-border);
+        padding: 8px 16px;
+        border-radius: 25px;
+        white-space: nowrap;
+        color: var(--text-white);
+    }
+
+    body.light-mode .nav-links a {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .worker-info {
+        padding: 0.75rem !important;
+    }
+
+    .call-btn {
+        bottom: 0.75rem !important;
+        right: 0.75rem !important;
+        width: 38px !important;
+        height: 38px !important;
+    }
+
+    .call-btn svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+}
+
+/* Worker Card Layout Fix */
+.worker-info {
+    position: relative;
+    padding: 1.5rem;
+}
+
+/* Worker Card Call Button */
+.call-btn {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: #10b981;
+    color: white !important;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    z-index: 10;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.call-btn:hover {
+    transform: scale(1.1);
+}
+
+.call-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: white;
 }
 
 /* Liquid Loader Styles */
@@ -895,10 +995,12 @@ nav {
 .darkBorderBg,
 .glow {
     max-height: 70px;
-    max-width: 314px;
     height: 100%;
     width: 100%;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     overflow: hidden;
     z-index: -1;
     border-radius: 12px;
@@ -911,7 +1013,9 @@ nav {
     align-items: center;
     justify-content: center;
     margin: 3rem auto;
-    /* Added margin to center in hero */
+    position: relative;
+    width: 614px;
+    max-width: 95%;
 }
 
 .input::placeholder {
@@ -920,20 +1024,6 @@ nav {
 
 .input:focus {
     outline: none;
-}
-
-#main:focus-within>#input-mask {
-    display: none;
-}
-
-#input-mask {
-    pointer-events: none;
-    width: 100px;
-    height: 20px;
-    position: absolute;
-    background: linear-gradient(90deg, transparent, black);
-    top: 18px;
-    left: 70px;
 }
 
 #pink-mask {
@@ -955,7 +1045,6 @@ nav {
 
 .white {
     max-height: 63px;
-    max-width: 307px;
     border-radius: 10px;
     filter: blur(2px);
 }
@@ -979,7 +1068,6 @@ nav {
 
 .border {
     max-height: 59px;
-    max-width: 303px;
     border-radius: 11px;
     filter: blur(0.5px);
 }
@@ -1003,7 +1091,6 @@ nav {
 
 .darkBorderBg {
     max-height: 65px;
-    max-width: 312px;
 }
 
 .darkBorderBg::before {
@@ -1079,7 +1166,6 @@ nav {
     filter: blur(30px);
     opacity: 0.4;
     max-height: 130px;
-    max-width: 354px;
 }
 
 .glow:before {
@@ -1218,9 +1304,7 @@ select#priceTypeFilter option {
 .darkBorderBg,
 .glow {
     max-width: 100% !important;
-    /* Allow growing */
-    width: 614px !important;
-    /* Specific width */
+    width: 100% !important;
 }
 
 /* Search & Pincode container on Edit/Register */
@@ -1352,7 +1436,103 @@ select#priceTypeFilter option {
     border: 1px solid rgba(129, 140, 248, 0.3);
 }
 
-/* Professional Custom Dropdown Design */
+/* Theme Toggle */
+.theme-toggle {
+    background: var(--glass-border);
+    border: 1px solid var(--glass-border);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    color: var(--text-white);
+}
+
+.theme-toggle:hover {
+    background: var(--secondary);
+    color: white;
+    transform: rotate(20deg);
+}
+
+body.light-mode footer {
+    background: var(--footer-bg) !important;
+}
+
+body.light-mode .input {
+    background-color: #ffffff;
+    color: #0f172a;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .input::placeholder {
+    color: #64748b;
+}
+
+body.light-mode .filter-group {
+    background: #ffffff !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-mode .filter-group label {
+    color: var(--primary);
+    /* Stronger color for labels */
+}
+
+body.light-mode .filter-group span,
+body.light-mode .filter-group input {
+    color: #1e293b !important;
+    /* Force dark text */
+}
+
+body.light-mode .filter-group:hover {
+    border-color: var(--secondary) !important;
+    background: #f8fafc !important;
+}
+
+/* De-emphasize decorative layers in light mode for cleaner look */
+body.light-mode .white,
+body.light-mode .border,
+body.light-mode .darkBorderBg,
+body.light-mode .glow {
+    opacity: 0.15;
+}
+
+body.light-mode .custom-filter-dropdown {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .filter-option {
+    color: #1e293b;
+}
+
+body.light-mode .summary-card {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+body.light-mode .summary-value {
+    color: #0f172a;
+}
+
+body.light-mode .location-box {
+    background: rgba(79, 70, 229, 0.05);
+}
+
+body.light-mode .btn-option {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1e293b;
+}
+
+body.light-mode #search-icon svg circle,
+body.light-mode #search-icon svg line {
+    stroke: var(--primary);
+}
+
 .custom-dropdown-wrapper {
     position: relative;
     cursor: pointer;
@@ -1433,19 +1613,19 @@ select#priceTypeFilter option {
 
 .filter-option {
     padding: 10px 16px;
-    border-radius: 18px;
-    /* Rounded options */
+    border-radius: 12px;
     cursor: pointer;
-    color: white;
-    transition: all 0.2s ease;
+    color: var(--text-white);
+    /* Use variable */
+    transition: all 0.25s ease;
     font-size: 0.9rem;
     margin-bottom: 2px;
 }
 
 .filter-option:hover {
-    background: rgba(236, 72, 153, 0.2);
-    color: var(--secondary);
-    padding-left: 22px;
+    background: var(--secondary);
+    color: white !important;
+    padding-left: 20px;
 }
 
 /* Admin Tabs Styles */

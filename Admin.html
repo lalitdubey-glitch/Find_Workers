@@ -9,11 +9,17 @@
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='16' height='11' x='4' y='9' rx='2'/%3E%3Cpath d='M8 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M12 13v2'/%3E%3Cpath d='M8 13h8'/%3E%3C/svg%3E">
 
     <link rel="stylesheet" href="CSS/index.css">
+    <link href="Library/fontawesome/css/all.min.css" rel="stylesheet">
     <script src="Library/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="JS/supabase_config.js"></script>
     <script src="JS/Index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            display: none;
+        }
+    </style>
     <script>
         $(document).ready(function () {
             if (typeof checkAdminSession === 'function') checkAdminSession();
@@ -29,13 +35,21 @@
             <a href="Register.html">वर्कर बनें (Register Here)</a>
             <a href="Admin.html">Admin Panel</a>
             <a href="javascript:void(0)" onclick="logoutAdmin()" style="color: #ef4444;">Logout</a>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode"
+                style="margin-left: 10px;">
+                <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
         </div>
     </nav>
     <div class="hero">
-        <h1 class="logo" style="font-size: 3rem; -webkit-text-fill-color: initial; background: none; color: white;">
+        <h1 class="logo"
+            style="font-size: 3rem; -webkit-text-fill-color: initial; background: none; color: var(--text-white);">
             Admin
             Panel</h1>
-        <p>Manage worker profiles, details, and site operations.</p>
+        <p style="color: var(--text-muted);">Manage worker profiles, details, and site operations.</p>
     </div>
 
     <div class="admin-tabs" style="margin: 0 5% 1rem; display: flex; gap: 1rem;">
@@ -49,7 +63,7 @@
             style="margin: 0 5% 4rem; padding: 1.5rem; overflow: hidden;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h2
-                    style="font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    style="font-weight: 800; background: var(--gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                     Registered Workers</h2>
                 <div style="color: var(--text-muted); font-size: 0.9rem;" id="workerCount">Loading...</div>
             </div>
@@ -94,7 +108,7 @@
         <div class="admin-table-container glass animate-fade" style="margin: 0 5% 4rem; padding: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h2
-                    style="font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    style="font-weight: 800; background: var(--gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                     Manage Work Types</h2>
                 <button class="btn-primary" onclick="openWorkTypeModal()">+ Add Work Type</button>
             </div>
@@ -119,17 +133,17 @@
     <div id="workTypeModal" class="modal-overlay"
         style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center;">
         <div class="glass" style="width: 400px; padding: 2rem; border-radius: 20px;">
-            <h3 id="modalTitle" style="color: white; margin-bottom: 1.5rem;">Add Work Type</h3>
+            <h3 id="modalTitle" style="color: var(--text-white); margin-bottom: 1.5rem;">Add Work Type</h3>
             <input type="hidden" id="workTypeId">
             <div class="form-group" style="margin-bottom: 1rem;">
                 <label style="color: var(--secondary);">English Name</label>
                 <input type="text" id="workTypeName" placeholder="e.g. Mason"
-                    style="width: 100%; padding: 0.8rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: white;">
+                    style="width: 100%; padding: 0.8rem; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-white);">
             </div>
             <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label style="color: var(--secondary);">Hindi Name</label>
                 <input type="text" id="workTypeHindi" placeholder="जैसे: राज मिस्त्री"
-                    style="width: 100%; padding: 0.8rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: white;">
+                    style="width: 100%; padding: 0.8rem; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-white);">
             </div>
             <div style="display: flex; gap: 1rem;">
                 <button class="btn-primary" style="flex: 1;" onclick="saveWorkType()">Save</button>

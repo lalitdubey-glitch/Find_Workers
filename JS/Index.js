@@ -1,6 +1,24 @@
 $(document).ready(function () {
     window.allWorkTypes = [];
 
+    // --- CUSTOM LIQUID LOADER FOR SWEETALERT2 ---
+    window.showCustomLoader = function (titleText) {
+        return Swal.fire({
+            title: titleText,
+            html: `
+                <div class="liquid-loader" style="margin-top: 20px;">
+                    <div class="loader-track">
+                        <div class="liquid-fill"></div>
+                    </div>
+                </div>
+            `,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            background: 'var(--card-bg)',
+            color: 'var(--text-white)'
+        });
+    };
+
     // --- FETCH WORK TYPES FROM SUPABASE ---
     async function fetchAllWorkTypes(callback) {
         const { data, error } = await supabase
@@ -88,7 +106,7 @@ $(document).ready(function () {
             return;
         }
 
-        Swal.fire({ title: 'खोज रहे हैं...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        showCustomLoader('खोज रहे हैं...');
 
         try {
             const res = await fetch('https://api.postalpincode.in/pincode/' + pin);
@@ -101,12 +119,22 @@ $(document).ready(function () {
                 const district = po[0].District;
 
                 // Update Real Selects
-                $('#stateFilter').html(`<option value="${state}">${state}</option>`);
-                $('#districtFilter').html(`<option value="${district}">${district}</option>`);
+                $('#stateFilter').html(`<option value="">सभी राज्य</option><option value="${state}">${state}</option>`);
+                $('#districtFilter').html(`<option value="">सभी जिले</option><option value="${district}">${district}</option>`);
+
+                // Update Custom Dropout Lists
+                $('#stateOptions').html(`
+                    <div class="filter-option" onclick="setCustomFilter('state', '', 'सभी राज्य')">सभी राज्य</div>
+                    <div class="filter-option" onclick="setCustomFilter('state', '${state}', '${state}')">${state}</div>
+                `);
+                $('#districtOptions').html(`
+                    <div class="filter-option" onclick="setCustomFilter('dist', '', 'सभी जिले')">सभी जिले</div>
+                    <div class="filter-option" onclick="setCustomFilter('dist', '${district}', '${district}')">${district}</div>
+                `);
 
                 // Update Custom Labels
-                $('#selectedStateText').text(state).css('color', 'white');
-                $('#selectedDistrictText').text(district).css('color', 'white');
+                $('#selectedStateText').text(state).css('color', 'var(--text-white)');
+                $('#selectedDistrictText').text(district).css('color', 'var(--text-white)');
 
                 // Update Villages Custom List
                 let vOpts = '<option value="">सभी गाँव/शहर</option>';
@@ -202,9 +230,11 @@ $(document).ready(function () {
                         <div class="worker-name">${w.full_name}</div>
                         <div class="worker-details"><strong>काम:</strong> ${wTypeDisplay}</div>
                         <div class="worker-details"><strong>स्थान:</strong> ${w.village_name}, ${w.district_name}</div>
-                        <div class="worker-details"><strong>संपर्क:</strong> ${w.phone}</div>
                         <div class="worker-price">₹ ${w.price} <span>(${pTypeHindi})</span></div>
                         <div class="rating-container">${stars} <span style="font-size:0.8em">(${w.rating_count})</span></div> 
+                        <a href="tel:${w.phone}" class="call-btn" title="Call ${w.full_name}">
+                            <i class="fas fa-phone"></i>
+                        </a>
                     </div>
                 </div>`;
             });
@@ -302,7 +332,7 @@ $(document).ready(function () {
         const id = $('#workerId').val();
         if (!id) return;
 
-        Swal.fire({ title: 'Profile is Updating...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        showCustomLoader('Profile is Updating...');
 
         let photoUrl = $('#currentImagePath').val();
         const photoFile = $('#regImage')[0].files[0];
@@ -355,7 +385,7 @@ $(document).ready(function () {
             return;
         }
 
-        Swal.fire({ title: 'सेव हो रहा है...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        showCustomLoader('सेव हो रहा है...');
 
         let imageUrl = $('#currentImagePath').val();
         const photoFile = $('#regImage')[0].files[0];
@@ -406,6 +436,11 @@ $(document).ready(function () {
             window.location.href = 'Login.html';
         } else {
             localStorage.setItem('isAdminLoggedIn', 'true');
+            // Show body if it was hidden for protection
+            $('body').show();
+            if (window.location.pathname.includes('Login.html')) {
+                window.location.href = 'Admin.html';
+            }
         }
     };
 
@@ -576,15 +611,11 @@ $(document).ready(function () {
         if (current === 4) valueToSpeak = "आपकी उम्र " + $('#regAge').val() + " साल है।";
 
         if (valueToSpeak) {
-            // Wait for voice to finish before going to next step
-            speakHindi(valueToSpeak, function () {
-                goToStep(current + 1);
-                if (current + 1 === 9) showFinalSummary();
-            });
-        } else {
-            goToStep(current + 1);
-            if (current + 1 === 9) showFinalSummary();
+            speakHindi(valueToSpeak);
         }
+
+        goToStep(current + 1);
+        if (current + 1 === 9) showFinalSummary();
     };
 
     window.previousStep = function (current) {
@@ -733,7 +764,7 @@ $(document).ready(function () {
             return;
         }
 
-        Swal.fire({ title: 'वेरिफाई हो रहा है...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        showCustomLoader('Verifying...');
 
         try {
             const res = await fetch('https://api.postalpincode.in/pincode/' + pin);
@@ -907,7 +938,7 @@ $(document).ready(function () {
     // Start registration voice if on Register page
     if ($('.reg-step.active').length > 0) {
         var firstVoice = $('.reg-step.active').attr('data-voice');
-        if (firstVoice) setTimeout(() => speakHindi(firstVoice), 1000);
+        if (firstVoice) setTimeout(() => speakHindi(firstVoice), 100);
     }
 
     // --- UI HELPERS ---
@@ -968,16 +999,16 @@ $(document).ready(function () {
     window.setCustomFilter = function (type, val, text) {
         if (type === 'state') {
             $('#stateFilter').val(val).trigger('change');
-            $('#selectedStateText').text(text).css('color', 'white');
+            $('#selectedStateText').text(text).css('color', 'var(--text-white)');
         } else if (type === 'dist') {
             $('#districtFilter').val(val).trigger('change');
-            $('#selectedDistrictText').text(text).css('color', 'white');
+            $('#selectedDistrictText').text(text).css('color', 'var(--text-white)');
         } else if (type === 'vill') {
             $('#villageFilter').val(val).trigger('change');
-            $('#selectedVillageText').text(text).css('color', 'white');
+            $('#selectedVillageText').text(text).css('color', 'var(--text-white)');
         } else if (type === 'priceType') {
             $('#priceTypeFilter').val(val).trigger('change');
-            $('#selectedPriceTypeText').text(text).css('color', 'white');
+            $('#selectedPriceTypeText').text(text).css('color', 'var(--text-white)');
         }
         $('.custom-filter-dropdown').fadeOut(200);
         $('.custom-dropdown-wrapper').removeClass('dropdown-active');
@@ -1004,6 +1035,31 @@ $(document).ready(function () {
                 $('#regVillage').html(vHtml);
             }
         } catch (err) { console.error(err); }
+    }
+
+    // --- THEME TOGGLE LOGIC ---
+    window.toggleTheme = function () {
+        const body = $('body');
+        const isLight = body.hasClass('light-mode');
+
+        if (isLight) {
+            body.removeClass('light-mode');
+            localStorage.setItem('theme', 'dark');
+            $('.theme-toggle i').removeClass('fa-sun').addClass('fa-moon');
+            $('#theme-icon').html('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>'); // Moon
+        } else {
+            body.addClass('light-mode');
+            localStorage.setItem('theme', 'light');
+            $('.theme-toggle i').removeClass('fa-moon').addClass('fa-sun');
+            $('#theme-icon').html('<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>'); // Sun
+        }
+    };
+
+    // Initialize Theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        $('body').addClass('light-mode');
+        $('#theme-icon').html('<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>'); // Sun
     }
 
     // --- INITIAL LOAD ---

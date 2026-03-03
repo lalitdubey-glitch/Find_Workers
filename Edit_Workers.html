@@ -9,11 +9,22 @@
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='16' height='11' x='4' y='9' rx='2'/%3E%3Cpath d='M8 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M12 13v2'/%3E%3Cpath d='M8 13h8'/%3E%3C/svg%3E">
 
     <link rel="stylesheet" href="CSS/index.css">
+    <link href="Library/fontawesome/css/all.min.css" rel="stylesheet">
     <script src="Library/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="JS/supabase_config.js"></script>
     <script src="JS/Index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            display: none;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            if (typeof checkAdminSession === 'function') checkAdminSession();
+        });
+    </script>
 </head>
 
 <body>
@@ -24,6 +35,13 @@
             <a href="Register.html">वर्कर बनें (Register Here)</a>
             <a href="Admin.html">Admin Panel</a>
             <a href="index.html" style="color: #ef4444;">Logout</a>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode"
+                style="margin-left: 10px;">
+                <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
         </div>
     </nav>
     <div style="max-width: 800px; margin: 2rem auto;">
