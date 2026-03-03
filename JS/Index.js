@@ -332,6 +332,11 @@ $(document).ready(function () {
         const id = $('#workerId').val();
         if (!id) return;
 
+        // Perform full validation like registration
+        for (let i = 1; i <= 7; i++) {
+            if (!validateStep(i)) return;
+        }
+
         showCustomLoader('Profile is Updating...');
 
         let photoUrl = $('#currentImagePath').val();
@@ -438,6 +443,8 @@ $(document).ready(function () {
             localStorage.setItem('isAdminLoggedIn', 'true');
             // Show body if it was hidden for protection
             $('body').show();
+            // Show logout button if navbar is loaded
+            $('#logoutBtn').show();
             if (window.location.pathname.includes('Login.html')) {
                 window.location.href = 'Admin.html';
             }
@@ -689,17 +696,35 @@ $(document).ready(function () {
             speakHindi(msg);
             return false;
         }
-        if (step === 6 && !$('#regPrice').val()) {
-            const msg = "कृपया दिहाड़ी लिखें।";
-            Swal.fire('Error', msg, 'error');
-            speakHindi(msg);
-            return false;
+        if (step === 6) {
+            const price = parseFloat($('#regPrice').val());
+            if (isNaN(price) || price <= 0) {
+                const msg = "कृपया सही दिहाड़ी (Price) लिखें।";
+                Swal.fire('Error', msg, 'error');
+                speakHindi(msg);
+                return false;
+            }
         }
-        if (step === 7 && !$('#regVillage').val()) {
-            const msg = "कृपया अपना गाँव चुनें।";
-            Swal.fire('Error', msg, 'error');
-            speakHindi(msg);
-            return false;
+        if (step === 7) {
+            const pin = $('#regPincode').val().trim();
+            if (!/^\d{6}$/.test(pin)) {
+                const msg = "6 अंकों का सही पिनकोड डालिये।";
+                Swal.fire('Error', msg, 'error');
+                speakHindi(msg);
+                return false;
+            }
+            if (!$('#regState').val() || !$('#regDistrict').val()) {
+                const msg = "कृपया पिनकोड वेरिफाई करें।";
+                Swal.fire('Error', msg, 'error');
+                speakHindi(msg);
+                return false;
+            }
+            if (!$('#regVillage').val()) {
+                const msg = "कृपया अपना गाँव चुनें।";
+                Swal.fire('Error', msg, 'error');
+                speakHindi(msg);
+                return false;
+            }
         }
         return true;
     }
@@ -1068,30 +1093,89 @@ $(document).ready(function () {
     });
 
     if (typeof loadRegisteredStates === 'function') loadRegisteredStates();
-});
 
-// --- PREVIEW IMAGE LOGIC ---
-window.previewImage = function (input) {
-    if (input.files && input.files[0]) {
-        var file = input.files[0];
-        if (!/(\.jpg|\.jpeg|\.png)$/i.exec(file.name)) {
-            Swal.fire('Error', 'Invalid file type', 'error');
+    // --- PREVIEW IMAGE LOGIC ---
+    window.previewImage = function (input) {
+        if (input.files && input.files[0]) {
+            var file = input.files[0];
+            if (!/(\.jpg|\.jpeg|\.png)$/i.exec(file.name)) {
+                Swal.fire('Error', 'Invalid file type', 'error');
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = e => {
+                $('#imgPreview').attr('src', e.target.result).parent().fadeIn();
+                $('#imagePreviewContainer').fadeIn();
+                $('#btnRemovePhoto').show();
+                $('#photoBtnText').text('Change Photo');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    window.removeRegisterPhoto = function () {
+        $('#regImage').val('');
+        $('#imgPreview').attr('src', '');
+        $('#imagePreviewContainer').hide();
+        $('#photoBtnText').text('Select Photo');
+    }
+
+    // --- DYNAMIC NAVBAR LOADER ---
+    async function loadNavbar() {
+        // Check if running on file:// protocol
+        if (window.location.protocol === 'file:') {
+            const errorMsg = "Navbar loading failed: Browsers block dynamic loading on file://. Please use a local server like 'Live Server' or 'http-server'.";
+            console.error(errorMsg);
+            $("#navbar-placeholder").html(`<div style="padding: 1rem; background: #fee2e2; color: #991b1b; text-align: center; border-radius: 8px;">${errorMsg}</div>`);
             return;
         }
-        var reader = new FileReader();
-        reader.onload = e => {
-            $('#imgPreview').attr('src', e.target.result).parent().fadeIn();
-            $('#imagePreviewContainer').fadeIn();
-            $('#btnRemovePhoto').show();
-            $('#photoBtnText').text('Change Photo');
-        };
-        reader.readAsDataURL(file);
-    }
-}
 
-window.removeRegisterPhoto = function () {
-    $('#regImage').val('');
-    $('#imgPreview').attr('src', '');
-    $('#imagePreviewContainer').hide();
-    $('#photoBtnText').text('Select Photo');
-}
+        const placeholder = document.getElementById('navbar-placeholder');
+        if (!placeholder) {
+            console.warn("loadNavbar: #navbar-placeholder not found on this page.");
+            return;
+        }
+
+        try {
+            const response = await fetch('Components/navbar.html');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const html = await response.text();
+            placeholder.innerHTML = html;
+
+            const currentPage = window.location.pathname.split("/").pop() || 'index.html';
+
+            // Highlight Active Link
+            $(".nav-item").each(function () {
+                const href = $(this).attr("href");
+                if (href === currentPage) {
+                    $(this).addClass("active");
+                    $(this).css("color", "var(--secondary)");
+                }
+            });
+
+            // Show Logout if Logged In
+            supabase.auth.getSession().then(({ data }) => {
+                if (data.session) {
+                    $('#logoutBtn').show();
+                }
+            });
+
+            // Re-initialize theme icon based on current theme
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            if (currentTheme === 'light') {
+                document.body.classList.add('light-mode');
+                const themeIcon = document.getElementById('theme-icon');
+                if (themeIcon) {
+                    themeIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+                }
+            }
+        } catch (error) {
+            console.error("loadNavbar: Error loading navbar:", error);
+            $("#navbar-placeholder").html(`<div style="padding: 1rem; background: #fee2e2; color: #991b1b; text-align: center; border-radius: 8px;">Navbar loading failed. Check console for details.</div>`);
+        }
+    }
+
+    // Initialize Navbar
+    loadNavbar();
+
+});
