@@ -1,0 +1,89 @@
+.edit-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 15px;
+}
+
+.edit-card {
+    padding: 2.5rem;
+    border-radius: 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(15px);
+}
+
+.edit-title {
+    text-align: center;
+    color: white;
+    margin: 2rem 0;
+    font-weight: 800;
+    font-size: 2.2rem;
+    letter-spacing: -1px;
+    background: var(--gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--secondary);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.photo-preview-box {
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid var(--secondary);
+    background: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.2);
+    flex-shrink: 0;
+}
+
+.edit-footer-btns {
+    margin-top: 3rem;
+    display: flex;
+    gap: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .edit-card {
+        padding: 1.5rem;
+    }
+
+    .edit-title {
+        font-size: 1.8rem;
+    }
+
+    .edit-footer-btns {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .edit-footer-btns button {
+        width: 100%;
+    }
+}

@@ -4,23 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bhadohi Workers Hub</title>
+    <title>Bhadohi Workers Hub - Edit Profile</title>
+    <script>
+        if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
+            window.location.replace('Login.html');
+        }
+    </script>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='16' height='11' x='4' y='9' rx='2'/%3E%3Cpath d='M8 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M12 13v2'/%3E%3Cpath d='M8 13h8'/%3E%3C/svg%3E">
-
+    <script src="Library/sweetalert2/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="CSS/index.css">
+    <link rel="stylesheet" href="CSS/edit.css"> <!-- Dedicated CSS File -->
     <link href="Library/fontawesome/css/all.min.css" rel="stylesheet">
     <script src="Library/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="JS/supabase_config.js"></script>
     <script src="JS/Index.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        body {
-            display: none;
-        }
-    </style>
+    <script src="JS/Admin.js"></script>
+
+
     <script>
+        window.disableVoice = true; // Hard disable for this page
         $(document).ready(function () {
             if (typeof checkAdminSession === 'function') checkAdminSession();
         });
@@ -29,126 +33,111 @@
 
 <body>
     <div id="navbar-placeholder"></div>
-    <div style="max-width: 800px; margin: 2rem auto;">
-        <h2 style="text-align: center; color: white; margin-bottom: 2rem;">Edit Worker Profile</h2>
+    <div class="edit-container">
+        <h2 class="edit-title">Edit Worker</h2>
 
-        <div class="form-container glass animate-fade">
-            <form id="editWorkerForm" enctype="multipart/form-data">
+        <div class="edit-card animate-fade">
+            <form id="editWorkerForm">
                 <input type="hidden" id="workerId" name="WorkerID">
 
-                <div style="display: grid; gap: 1.5rem;">
+                <div class="form-grid">
                     <!-- Basic Info -->
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" id="regName" name="FullName" placeholder="Full Name" style="width: 100%;">
+                        <input type="text" id="regName" class="login-input" placeholder="Full Name">
                     </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label>Phone Number</label>
-                            <input type="text" id="regPhone" name="Phone" placeholder="10 Digit Mobile" maxlength="10"
-                                style="width: 100%;">
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="regEmail" name="Email" placeholder="Email (Optional)"
-                                style="width: 100%;">
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label>Age</label>
-                            <input type="number" id="regAge" name="Age" placeholder="Age" style="width: 100%;">
-                        </div>
-                        <div class="form-group">
-                            <label>Work Type</label>
-                            <select id="regWork" name="WorkType"
-                                style="width: 100%; padding: 1rem; border-radius: 12px; background: rgba(0,0,0,0.2); color:white; border: 1px solid var(--glass-border);">
-                                <option value="">Select Work</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label>Wage (Price)</label>
-                            <input type="number" id="regPrice" name="Price" placeholder="Price" style="width: 100%;">
-                        </div>
-                        <div class="form-group">
-                            <label>Price Type</label>
-                            <select id="regPriceType" name="PriceType"
-                                style="width: 100%; padding: 1rem; border-radius: 12px; background: rgba(0,0,0,0.2); color:white; border: 1px solid var(--glass-border);">
-                                <option value="Per Day">Per Day (प्रति दिन)</option>
-                                <option value="Contract">Contract (ठेका)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Location -->
-                    <h3 style="color: var(--secondary); margin-top: 1rem;">Location</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label>Pincode</label>
-                            <div style="display: flex; gap: 8px;">
-                                <input type="text" id="regPincode" name="Pincode" placeholder="Pincode" maxlength="6"
-                                    style="width: 100%;">
-                                <button id="btnVerifyEditPincode" type="button" class="btn-primary"
-                                    style="padding: 0 1rem; white-space: nowrap;">Verify</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>State</label>
-                            <input type="text" id="regState" name="StateName" placeholder="State" readonly
-                                style="width: 100%; background: rgba(255,255,255,0.05);">
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label>District</label>
-                            <input type="text" id="regDistrict" name="DistrictName" placeholder="District" readonly
-                                style="width: 100%; background: rgba(255,255,255,0.05);">
-                        </div>
-                        <div class="form-group">
-                            <label>Village</label>
-                            <select id="regVillage" name="VillageName"
-                                style="width: 100%; padding: 1rem; border-radius: 12px; background: rgba(0,0,0,0.2); color:white; border: 1px solid var(--glass-border);">
-                                <option value="">Select Village</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Image -->
                     <div class="form-group">
-                        <label>Profile Image</label>
-                        <div style="display: flex; align-items: center; gap: 1.5rem;">
-                            <div style="position: relative; width: 80px; height: 80px;">
-                                <img id="imgPreview" src=""
-                                    style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid white; background: rgba(0,0,0,0.1);">
-                                <button type="button" id="btnRemovePhoto" title="Foto Hataye"
-                                    style="display:none; position: absolute; top: -5px; right: -5px; background: #ef4444; border:none; border-radius: 50%; width: 24px; height: 24px; color:white; cursor:pointer; font-size:16px; font-weight:bold; line-height: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">&times;</button>
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <input type="file" id="regImage" name="ImageFile" accept=".jpg, .jpeg, .png"
-                                    style="display: none;" onchange="previewImage(this)">
-                                <button type="button" class="btn-primary"
-                                    style="padding: 8px 15px; font-size: 14px; border-radius: 8px;"
-                                    onclick="$('#regImage').click()">Photo Badle (Change)</button>
-                                <input type="hidden" id="currentImagePath" name="ImagePath">
-                                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">फोटो अनिवार्य नहीं
-                                    है।
-                                </p>
-                            </div>
+                        <label>Phone Number</label>
+                        <input type="tel" id="regPhone" class="login-input" placeholder="Phone Number">
+                    </div>
+
+                    <!-- Email & Age -->
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="regEmail" class="login-input" placeholder="Email (Optional)">
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="regAge" class="login-input" placeholder="Age">
+                    </div>
+
+                    <!-- Work & Price Info -->
+                    <div class="form-group">
+                        <label>Work Category</label>
+                        <select id="regWork" class="login-input">
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Wage (Amount)</label>
+                        <input type="number" id="regPrice" class="login-input" placeholder="Example: 500">
+                    </div>
+
+                    <!-- Wage Type & Pincode -->
+                    <div class="form-group">
+                        <label>Wage Basis</label>
+                        <select id="regPriceType" class="login-input">
+                            <option value="Per Day">Per Day</option>
+                            <option value="Contract">Contract</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="regPincode" class="login-input" maxlength="6" style="flex: 1;">
+                            <button type="button" class="btn-primary" id="btnVerifyEditPincode"
+                                style="padding: 0 15px; font-size: 13px;">Verify</button>
                         </div>
                     </div>
 
-                    <button type="button" class="btn-primary"
-                        style="width: 100%; padding: 1.2rem; font-size: 1.1rem; margin-top: 1rem;"
-                        onclick="saveAdminEdit()">Save Changes</button>
-                    <button type="button" class="btn-delete"
-                        style="width: 100%; padding: 1rem; margin-top: 10px; background: transparent; border: 1px solid #ef4444; color: #ef4444;"
-                        onclick="window.history.back()">Cancel</button>
+                    <!-- Location Hierarchy -->
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" id="regState" class="login-input" readonly
+                            style="opacity: 0.6; cursor: not-allowed; background: rgba(0,0,0,0.2);">
+                    </div>
+                    <div class="form-group">
+                        <label>District</label>
+                        <input type="text" id="regDistrict" class="login-input" readonly
+                            style="opacity: 0.6; cursor: not-allowed; background: rgba(0,0,0,0.2);">
+                    </div>
 
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Village / City Selection</label>
+                        <select id="regVillage" class="login-input">
+                            <option value="">-- Verify Pincode First --</option>
+                        </select>
+                    </div>
+
+                    <!-- Profile Photo -->
+                    <div class="form-group" style="grid-column: 1 / -1; margin-top: 1rem;">
+                        <label>Profile Image</label>
+                        <div style="display: flex; align-items: center; gap: 2rem; margin-top: 10px; flex-wrap: wrap;">
+                            <div id="imagePreviewContainer" class="photo-preview-box">
+                                <img id="imgPreview" src="Image/default_profile.png"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <input type="file" id="regImage" accept="image/*" style="display: none;"
+                                    onchange="previewImage(this)">
+                                <button type="button" class="btn-outline" onclick="$('#regImage').click()">
+                                    <i class="fas fa-image" style="margin-right: 8px;"></i> UPDATE PHOTO
+                                </button>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px;">Recommended:
+                                    A clear front-facing face photo.</p>
+                                <input type="hidden" id="currentImagePath">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="edit-footer-btns">
+                    <button type="button" class="btn-primary" style="flex: 1.5; padding: 1.1rem; font-size: 1.1rem;"
+                        onclick="saveAdminEdit()">UPDATE WORKER ✅</button>
+                    <button type="button" class="btn-outline"
+                        style="flex: 1; padding: 1.1rem; background: rgba(255,255,255,0.05);"
+                        onclick="window.location.href='Admin.html'">BACK TO DASHBOARD</button>
                 </div>
             </form>
         </div>

@@ -7,44 +7,41 @@
     <title>Bhadohi Workers Hub</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='16' height='11' x='4' y='9' rx='2'/%3E%3Cpath d='M8 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M12 13v2'/%3E%3Cpath d='M8 13h8'/%3E%3C/svg%3E">
-
+    <script src="Library/sweetalert2/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="CSS/index.css">
+    <link rel="stylesheet" href="CSS/register.css">
     <link href="Library/fontawesome/css/all.min.css" rel="stylesheet">
     <script src="Library/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="JS/supabase_config.js"></script>
     <script src="JS/Index.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
     <div id="navbar-placeholder"></div>
 
-    <div class="form-container glass animate-fade" style="margin-top: 2rem;">
+    <div class="form-container glass animate-fade">
         <form id="registerForm" enctype="multipart/form-data">
             <input type="hidden" id="workerId" name="WorkerID" value="0">
             <div class="registration-stepper">
 
-                <!-- Step 1: Name -->
                 <div class="reg-step active" data-step="1" data-voice="अपना नाम बताइये">
                     <div class="form-group">
-                        <label style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 1rem;">अपना नाम बताइये
-                            (Full Name) *</label>
+                        <label class="reg-label">अपना नाम बताइये (Full Name) *</label>
                         <input type="text" id="regName" name="FullName" placeholder="यहाँ अपना नाम लिखें"
-                            style="font-size: 1.2rem; padding: 1.2rem;">
+                            class="reg-input" maxlength="30">
                     </div>
                     <div class="nav-buttons">
                         <button type="button" class="btn-next" onclick="nextStep(1)">अगला (Next) ➡️</button>
                     </div>
                 </div>
 
-                <!-- Step 2: Phone -->
-                <div class="reg-step" data-step="2" data-voice="अपना मोबाइल नंबर लिखिये">
+                <div class="reg-step" data-step="2" data-voice="अपना mobile number लिखिये">
                     <div class="form-group">
-                        <label style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 1rem;">अपना मोबाइल नंबर
-                            लिखिये *</label>
+                        <label class="reg-label">अपना मोबाइल नंबर लिखिये *</label>
                         <input type="text" id="regPhone" name="Phone" placeholder="10 अंकों का नंबर" maxlength="10"
-                            style="font-size: 1.2rem; padding: 1.2rem;">
+                            class="reg-input">
                     </div>
                     <div class="nav-buttons">
                         <button type="button" class="btn-back" onclick="previousStep(2)">⬅️ पीछे</button>
@@ -52,14 +49,11 @@
                     </div>
                 </div>
 
-                <!-- Step 3: Email (Optional) -->
                 <div class="reg-step" data-step="3" data-voice="अपना ईमेल लिखिये, आप इसे छोड़ भी सकते हैं">
                     <div class="form-group">
-                        <label style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 1rem;">ईमेल पता (Email)
-                            -
-                            वैकल्पिक</label>
+                        <label class="reg-label">ईमेल पता (Email) - वैकल्पिक</label>
                         <input type="email" id="regEmail" name="Email" placeholder="email@example.com"
-                            style="font-size: 1.2rem; padding: 1.2rem;">
+                            class="reg-input">
                     </div>
                     <div class="nav-buttons">
                         <button type="button" class="btn-back" onclick="previousStep(3)">⬅️ पीछे</button>
@@ -68,13 +62,10 @@
                     </div>
                 </div>
 
-                <!-- Step 4: Age -->
                 <div class="reg-step" data-step="4" data-voice="अपनी उम्र बताइये">
                     <div class="form-group">
-                        <label style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 1rem;">अपनी उम्र बताइये
-                            (Age) *</label>
-                        <input type="number" id="regAge" name="Age" placeholder="अपनी उम्र लिखें"
-                            style="font-size: 1.2rem; padding: 1.2rem;">
+                        <label class="reg-label">अपनी उम्र बताइये (Age) *</label>
+                        <input type="number" id="regAge" name="Age" placeholder="अपनी उम्र लिखें" class="reg-input">
                     </div>
                     <div class="nav-buttons">
                         <button type="button" class="btn-back" onclick="previousStep(4)">⬅️ पीछे</button>
@@ -82,14 +73,11 @@
                     </div>
                 </div>
 
-                <!-- Step 5: Work Type -->
                 <div class="reg-step" data-step="5" data-voice="आप क्या काम करते हैं">
                     <div class="form-group">
-                        <label style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 1rem;">आप क्या काम करते
-                            हैं? *</label>
+                        <label class="reg-label">आप क्या काम करते हैं? *</label>
                         <div class="options-grid" id="workTypeOptions">
-                            <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">काम लोड हो रहा
-                                है...</div>
+                            <div class="reg-loading-text">काम लोड हो रहा है...</div>
                         </div>
                         <input type="hidden" id="regWork" name="WorkType">
                     </div>
@@ -99,25 +87,20 @@
                     </div>
                 </div>
 
-                <!-- Step 6: Wage -->
                 <div class="reg-step" data-step="6" data-voice="अपनी मजदूरी या दिहाड़ी बताइये">
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="reg-flex-column">
                         <div class="form-group">
-                            <label style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 1rem;">अपनी दिहाड़ी
-                                (पैसे) बताइये *</label>
+                            <label class="reg-label">अपनी दिहाड़ी (पैसे) बताइये *</label>
                             <input type="number" id="regPrice" name="Price" placeholder="कितने रुपये लेंगे?"
-                                style="font-size: 1.2rem; padding: 1.2rem;">
+                                class="reg-input">
                         </div>
                         <div class="form-group">
-                            <label style="color: var(--secondary); margin-bottom: 0.5rem; display: block;">किस आधार
-                                पर?</label>
-                            <div class="options-grid" style="grid-template-columns: 1fr 1fr;">
+                            <label class="reg-sub-label">किस आधार पर?</label>
+                            <div class="options-grid reg-grid-half">
                                 <button type="button" class="btn-option"
-                                    onclick="selectPriceType('Per Day', this)">प्रति
-                                    दिन (Per Day)</button>
+                                    onclick="selectPriceType('Per Day', this)">प्रति दिन (Per Day)</button>
                                 <button type="button" class="btn-option"
-                                    onclick="selectPriceType('Contract', this)">ठेका
-                                    (Contract)</button>
+                                    onclick="selectPriceType('Contract', this)">ठेका (Contract)</button>
                             </div>
                             <input type="hidden" id="regPriceType" name="PriceType">
                         </div>
@@ -128,16 +111,14 @@
                     </div>
                 </div>
 
-                <!-- Step 7: Pincode & Location -->
                 <div class="reg-step" data-step="7" data-voice="अपने एरिया का पिनकोड डालिये">
                     <div class="form-group">
-                        <label style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 1rem;">पिनकोड (Pincode)
-                            *</label>
-                        <div style="display: flex; gap: 0.5rem;">
+                        <label class="reg-label">पिनकोड (Pincode) *</label>
+                        <div class="reg-verify-box">
                             <input type="text" id="regPincode" name="Pincode" placeholder="6 अंकों का पिनकोड"
-                                maxlength="6" style="flex: 2; font-size: 1.2rem; padding: 1.2rem;">
-                            <button type="button" class="btn-primary" id="btnVerifyPincode"
-                                style="flex: 1; padding: 0.5rem; font-size: 1rem;">Verify</button>
+                                maxlength="6" class="reg-input">
+                            <button type="button" class="btn-primary reg-verify-btn"
+                                id="btnVerifyPincode">Verify</button>
                         </div>
                     </div>
 
@@ -152,12 +133,9 @@
                             <span id="displayDistrict">-</span>
                             <input type="hidden" id="regDistrict" name="DistrictName">
                         </div>
-                        <div class="form-group" style="text-align: left;">
-                            <label style="color: var(--secondary); margin-bottom: 0.5rem; display: block;">अपना गाँव या
-                                शहर
-                                चुनें *</label>
-                            <div id="villageList" class="location-grid"
-                                style="grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="form-group">
+                            <label class="reg-sub-label">अपना गाँव या शहर चुनें *</label>
+                            <div id="villageList" class="location-grid reg-grid-half">
                                 <!-- Villages will be added here as buttons -->
                             </div>
                             <input type="hidden" id="regVillage" name="VillageName">
@@ -170,35 +148,26 @@
                     </div>
                 </div>
 
-                <!-- Step 8: Image (Optional) -->
                 <div class="reg-step" data-step="8" data-voice="अपनी एक फोटो अपलोड करें, आप इसे छोड़ भी सकते हैं">
-                    <div class="form-group" style="text-align: center;">
-                        <label
-                            style="font-size: 1.5rem; color: var(--secondary); margin-bottom: 1.5rem; display: block;">अपनी
-                            फोटो लगायें (फोटो चुनें) - वैकल्पिक</label>
+                    <div class="form-group">
+                        <label class="reg-label">अपनी फोटो लगायें (फोटो चुनें) - वैकल्पिक</label>
 
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+                        <div class="reg-flex-center">
                             <!-- Preview Box with Remove Button -->
-                            <div id="imagePreviewContainer"
-                                style="display: none; position: relative; width: 180px; height: 180px;">
-                                <img id="imgPreview" src=""
-                                    style="width: 180px; height: 180px; border-radius: 20px; object-fit: cover; border: 4px solid var(--secondary); background: rgba(0,0,0,0.1);">
+                            <div id="imagePreviewContainer" class="reg-preview-wrapper" style="display: none;">
+                                <img id="imgPreview" src="" class="reg-preview-img">
                                 <button type="button" onclick="removeRegisterPhoto()" title="Photo Hataye"
-                                    style="position: absolute; top: -10px; right: -10px; background: #ef4444; border:none; border-radius: 50%; width: 32px; height: 32px; color:white; cursor:pointer; font-size:20px; font-weight:bold; line-height: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10;">&times;</button>
+                                    class="reg-remove-btn">&times;</button>
                             </div>
 
-                            <!-- Action Buttons -->
-                            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                            <div class="reg-flex-column reg-flex-center">
                                 <input type="file" id="regImage" name="ImageFile" accept=".jpg, .jpeg, .png"
                                     style="display: none;" onchange="previewImage(this)">
-                                <button type="button" class="btn-primary"
-                                    style="padding: 1rem 2rem; font-size: 1.1rem; border-radius: 15px;"
+                                <button type="button" class="btn-primary reg-photo-btn"
                                     onclick="$('#regImage').click()">
                                     <span id="photoBtnText">फोटो चुनें (Select Photo)</span>
                                 </button>
-                                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">प्रोफाइल फोटो
-                                    अनिवार्य
-                                    नहीं है।</p>
+                                <p class="reg-helper-text">प्रोफाइल फोटो अनिवार्य नहीं है।</p>
                             </div>
                         </div>
                     </div>
@@ -210,17 +179,16 @@
                     </div>
                 </div>
 
-                <!-- Step 9: Final Summary -->
                 <div class="reg-step" data-step="9" data-voice="अपने भरे हुए विवरण की जांच कर लें">
-                    <h2 style="color: white; margin-bottom: 1.5rem; text-align: center;">चेक करें (Summary)</h2>
+                    <h2 class="reg-summary-title">चेक करें (Summary)</h2>
                     <div class="summary-card" id="finalSummary">
                         <!-- Summary will be injected here -->
                     </div>
                     <button type="button" class="btn-submit-final" id="btnRegister">हाँ, सेव करें! (Submit) ✅</button>
                     <div class="nav-buttons">
                         <button type="button" class="btn-back" onclick="previousStep(9)">⬅️ पीछे</button>
-                        <button type="button" class="btn-primary" style="margin-top: 0; width: 100%; opacity: 0.7;"
-                            onclick="goToStep(1)">शुरुआत से बदलें (Restart)</button>
+                        <button type="button" class="btn-primary reg-restart-btn" onclick="goToStep(1)">शुरुआत से बदलें
+                            (Restart)</button>
                     </div>
                 </div>
 

@@ -1,0 +1,235 @@
+/* Admin Panel Specific Styles */
+
+.admin-tabs {
+    margin: 0 5% 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.tab-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.tab-btn.active {
+    background: var(--secondary);
+    color: white;
+    border-color: var(--secondary);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.admin-table-container {
+    overflow-x: auto;
+    padding: 1.5rem;
+    margin: 0 5% 4rem;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    min-width: 900px;
+}
+
+.admin-table th {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 1.25rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+.admin-table tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.3s;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    background: rgba(79, 70, 229, 0.2);
+    color: #818cf8;
+    border: 1px solid rgba(129, 140, 248, 0.3);
+}
+
+/* Admin Pagination */
+#adminPagination {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+/* Responsiveness for Admin Panel */
+@media (max-width: 768px) {
+    .admin-table-container {
+        margin: 0 10px 2rem;
+        padding: 1rem;
+    }
+
+    .admin-table {
+        min-width: 600px;
+    }
+}
+
+/* Additional Clean up Styles */
+
+/* Header Section */
+.admin-title {
+    font-size: 3.5rem !important;
+    font-weight: 900 !important;
+    margin-bottom: 0.5rem;
+}
+
+.admin-subtitle {
+    color: var(--text-muted);
+}
+
+/* Table Controls */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.gradient-text {
+    font-weight: 800;
+    background: var(--gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.worker-count {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Loading & Empty State */
+.loading-cell {
+    text-align: center;
+    padding: 4rem !important;
+}
+
+.loading-text-sub {
+    margin-top: 1rem;
+    color: var(--text-muted);
+}
+
+/* Modal Styling */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+}
+
+.modal-box {
+    width: 400px;
+    max-width: 90%;
+    padding: 2.5rem;
+    border-radius: 24px;
+}
+
+.modal-title {
+    color: var(--text-white);
+    margin-bottom: 1.5rem !important;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.modal-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.modal-label {
+    display: block;
+    margin-bottom: 0.6rem;
+    color: var(--secondary);
+    font-weight: 600 !important;
+    font-size: 0.9rem;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border-radius: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.modal-input:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
+}
+
+.modal-footer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.modal-btn-cancel {
+    background: transparent !important;
+    border: 1px solid #ef4444 !important;
+    color: #ef4444 !important;
+}
+
+.modal-btn-cancel:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+}
